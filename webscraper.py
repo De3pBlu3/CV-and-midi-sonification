@@ -3,6 +3,15 @@ import requests
 import json
 import datetime
 
+
+# Data will be delayed by 5 min, so we can derive influences based on time rather than live update
+# This just gets around timeout/request amount limitations in the future. If we can stagnate each request 
+# by an amount of time this wouldbe good too. Just trying to spread it out more and more. 
+# Hmm tho tbf tho, if u spread it to be one big call every 5 min that might work better? 
+# Might be worth doing stat analysis, see which subreddits are most popular?account for that?
+
+
+
 subredditList = []
 
 with open("subreddits.txt", "r") as text_file:
