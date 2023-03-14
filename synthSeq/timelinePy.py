@@ -1,4 +1,6 @@
 import time
+import CVbuffer #Actually sends CV to arduino
+import synthControl #Has functions like ramp up/down, envelope, etc.
 
 def run_function_at_time(func, t):
     """
@@ -41,6 +43,7 @@ def create_timeline(duration, function_times):
 
 # Example usage:
 def func1():
+    synthControl.UsersendVoltage()
     print("Function 1 ran.")
 
 def func2():

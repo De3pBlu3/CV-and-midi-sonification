@@ -2,15 +2,19 @@ import serial
 from time import sleep
 import math
 import queue
+debugMode = False
 ser = None
 instruction_queue = None
 
 def intialisation(port="COM3", baudrate=9600):
     global instruction_queue
     global ser
-    # ser = serial.Serial(port, baudrate)
-    sleep(2)
-    print("Serial port opened on", port, "at", baudrate, "baud")
+    if debugMode == False:
+        ser = serial.Serial(port, baudrate)
+        sleep(2)
+        print("Serial port opened on", port, "at", baudrate, "baud")
+    else:
+        print("Debug mode activated, no serial port opened")
     instruction_queue = queue.Queue()
 
 def closeSerial():
@@ -26,7 +30,6 @@ def map_voltage(voltage):
     return value
 
 
-
 #Queue a voltage and a channel to be added to the instruction queue
 def queueVoltage(channel, voltage):
     value = map_voltage(voltage)
@@ -35,15 +38,19 @@ def queueVoltage(channel, voltage):
     instruction_queue.put(instructionTemplate)
 
 #The function that continually goes over the instruction queue and sends the voltage to the arduino
-def VoltageSendqueue():
+def queueCompleteThread():
     while True:
         # Get instruction from queue
         instruction = instruction_queue.get()
+        voltage = instruction[1]
+        channel = instruction[0]
         # Process instruction
-        print(instruction)
-        # value = map_voltage(voltage)
-        # ser.write(bytes('{:d} {:d}\n'.format(channel, value), 'utf-8'))
-
+        if debugMode == False:
+            value = map_voltage(voltage)
+            ser.write(bytes('{:d} {:d}\n'.format(channel, value), 'utf-8'))
+            print("Completed instruction, channel:", channel, "voltage:", voltage)
+        else:
+            print("*Debug* Completed instruction, channel:", channel, "voltage:", voltage)
         # Mark instruction as complete
         instruction_queue.task_done()
             
