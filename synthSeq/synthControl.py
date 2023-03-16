@@ -1,6 +1,17 @@
 import time
 import CVbuffer
 
+def valueValidation(value,channel):
+    if value > 5.0 or value < 0.0:
+        print("Voltage out of range")
+        return(False)
+    if channel > 5 or channel < 0:
+        print("Channel out of range")
+        return(False)
+    else:
+        return(True)
+
+
 def sendStaticVoltage(channel,value):  # This function is called from synthSeq\CVbuffer.py
     """Sends a static voltage to be queued to the Arduino.
 
@@ -9,14 +20,8 @@ def sendStaticVoltage(channel,value):  # This function is called from synthSeq\C
         value float: Value between 0 and 5 volts to send to the Arduino.
     """
     
-    if value > 5.0 or value < 0.0:
-        print("Voltage out of range")
-        return()
-    if channel > 5 or channel < 0:
-        print("Channel out of range")
-        return()
-    
-    CVbuffer.queueVoltage(channel, value)
+    if valueValidation(value,channel):
+        CVbuffer.queueVoltage(channel, value)
 
 def sendRampUp(channel, start_voltage, end_voltage, duration):
     """Send a ramp up to be queued to the Arduino.
@@ -27,6 +32,9 @@ def sendRampUp(channel, start_voltage, end_voltage, duration):
         end_voltage (float): The voltage to end the ramp at.
         duration (float): The duration of the ramp in seconds.
     """
+
+    if valueValidation != True:
+        return()
     num_steps = 100  # Number of voltage steps
     voltage_increment = (end_voltage - start_voltage) / num_steps
 
