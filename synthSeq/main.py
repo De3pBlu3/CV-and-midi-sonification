@@ -23,7 +23,7 @@ def input_thread():
 
 
 # Declare the input and processing threads
-input_thread = threading.Thread(target=input_thread)
+# input_thread = threading.Thread(target=input_thread)
 processing_thread = threading.Thread(target=CVbuffer.queueCompleteThread)
 
 # Start the threads
@@ -33,6 +33,17 @@ processing_thread.start()
 
 synthControl.sinWave(1,100)
 
-# Wait for all instructions to be processed before exiting
-CVbuffer.instruction_queue.join()
+#close processing thread
+print(threading.enumerate())
+
+CVbuffer.endQueue()
+print(threading.enumerate())
+
+processing_thread.join()
+
+#print all running threads
+print(threading.enumerate())
+# Wait for the threads to finish
+# input_thread.join()
+# processing_thread.join()
 

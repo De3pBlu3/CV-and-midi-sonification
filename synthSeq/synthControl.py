@@ -1,7 +1,7 @@
+from timeing import sleep_precisely
 import time
 import CVbuffer
-import numpy as np
-import matplotlib.pyplot as plt
+import math
 
 def testIfSinisvalid(sineWaveVals):
     maxValue = round(sineWaveVals.max(),2)
@@ -105,21 +105,33 @@ def envelopeRampUp(channel, start_voltage, end_voltage, duration):
         # Wait for a short period of time before sending the next voltage value
         time.sleep(duration / num_steps)
 
-def sinWave(channel, freq):
+def sinWave(channel, frequency):
     """Send a sin wave to be queued to the Arduino.
 
     Args:
         channel (int): The channel you wish to send the voltage to.
         freq (float): The frequency of the sin wave.
     """
-    resolution = 10000000 # how many datapoints to generate
 
-    length = np.pi * 2 * freq
-    signal = np.sin(np.arange(0, length, length / resolution))*2.5
-    signal = (signal+2.5)
 
-    if testIfSinisvalid(signal) == True:
-        #Send sin wave to CVbuffer
-        for i in range(len(signal)):
-            CVbuffer.queueVoltage(channel, signal[i])
-            time.sleep(1/len(signal))
+    frequency       =     1  # Frequency of the sine wave (in Hz)
+    sample_rate     =     300  # Sample rate (in Hz)
+    duration        =     1  # Total duration of the sine wave (in seconds)
+    samples         =     int(sample_rate * duration)  # Total number of samples
+    phase_increment =     2 * math.pi * frequency / sample_rate  # Phase increment for each sample
+    phase           =     0  # Starting phase
+    midline         =     2.5  # Midline of the sine wave
+    amplitude       =     2.5  # Amplitude of the sine wave
+    timeoffSet      =     0.001
+
+    # time the function
+    start = time.time()
+    for i in range(samples):
+        CVbuffer.queueVoltage(channel, midline + amplitude * math.sin(phase))
+        phase += phase_increment  # Increment the phase
+        time.sleep((1 / sample_rate)-timeoffSet)  # Sleep to ensure that the total duration is one second
+    end = time.time()
+
+    print("Total time:", end - start)
+    print("Time selected:", duration)
+    print("Time difference:", end - start - duration)
