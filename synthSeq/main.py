@@ -27,8 +27,12 @@ input_thread = threading.Thread(target=input_thread)
 processing_thread = threading.Thread(target=CVbuffer.queueCompleteThread)
 
 # Start the threads
-input_thread.start()
+# input_thread.start()
 processing_thread.start()
+
+
+synthControl.sinWave(1,100)
 
 # Wait for all instructions to be processed before exiting
 CVbuffer.instruction_queue.join()
+

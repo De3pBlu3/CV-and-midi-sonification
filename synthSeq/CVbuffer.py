@@ -34,7 +34,7 @@ def map_voltage(voltage):
 def queueVoltage(channel, voltage):
     value = map_voltage(voltage)
     instructionTemplate = (channel, value)
-    print(instructionTemplate, "instruction queued")
+    # print(instructionTemplate, "instruction queued")
     instruction_queue.put(instructionTemplate)
 
 #The function that continually goes over the instruction queue and sends the voltage to the arduino
@@ -51,6 +51,7 @@ def queueCompleteThread():
             print("Completed instruction, channel:", channel, "voltage:", voltage)
         else:
             print("*Debug* Completed instruction, channel:", channel, "voltage:", voltage)
+            pass
         # Mark instruction as complete
         instruction_queue.task_done()
             
