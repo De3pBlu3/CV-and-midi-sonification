@@ -1,8 +1,8 @@
-from timeing import sleep_precisely
+import timeing 
 import time
 import CVbuffer
 import math
-
+from time import process_time
 def testIfSinisvalid(sineWaveVals):
     maxValue = round(sineWaveVals.max(),2)
     minValue = round(sineWaveVals.min(),2)
@@ -115,23 +115,24 @@ def sinWave(channel, frequency):
 
 
     frequency       =     1  # Frequency of the sine wave (in Hz)
-    sample_rate     =     300  # Sample rate (in Hz)
+    sample_rate     =     150  # Sample rate (in Hz)
     duration        =     1  # Total duration of the sine wave (in seconds)
     samples         =     int(sample_rate * duration)  # Total number of samples
     phase_increment =     2 * math.pi * frequency / sample_rate  # Phase increment for each sample
     phase           =     0  # Starting phase
     midline         =     2.5  # Midline of the sine wave
     amplitude       =     2.5  # Amplitude of the sine wave
-    timeoffSet      =     0.001
+    timeoffSet      =     0.005
 
     # time the function
-    start = time.time()
+    t = process_time()
     for i in range(samples):
         CVbuffer.queueVoltage(channel, midline + amplitude * math.sin(phase))
         phase += phase_increment  # Increment the phase
-        time.sleep((1 / sample_rate)-timeoffSet)  # Sleep to ensure that the total duration is one second
-    end = time.time()
+        timeing.sleep_precisely((1 / sample_rate)-timeoffSet)  # Sleep to ensure that the total duration is one second
+    elapsed_time = process_time() - t
 
-    print("Total time:", end - start)
+    print("Sleep interval:", (1 / sample_rate)-timeoffSet)
+    print("Total time:", elapsed_time)
     print("Time selected:", duration)
-    print("Time difference:", end - start - duration)
+    print("Time difference:", elapsed_time - duration)

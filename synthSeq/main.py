@@ -34,15 +34,12 @@ processing_thread.start()
 synthControl.sinWave(1,100)
 
 #close processing thread
-print(threading.enumerate())
 
 CVbuffer.endQueue()
-print(threading.enumerate())
 
 processing_thread.join()
 
 #print all running threads
-print(threading.enumerate())
 # Wait for the threads to finish
 # input_thread.join()
 # processing_thread.join()

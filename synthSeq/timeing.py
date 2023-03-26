@@ -21,3 +21,8 @@ def _sleep_precisely_until(stop_time):
 def sleep_precisely(secs):
     _sleep_precisely_until(time.time() + secs)
 
+def until_sleep(secs):
+    now = time.perf_counter()
+    end = now + secs
+    while now < end:
+        now = time.perf_counter()
