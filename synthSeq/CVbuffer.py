@@ -5,7 +5,7 @@ import queue
 debugMode = False
 ser = None
 instruction_queue = None
-Kill = False
+KillThreadBool = False
 def intialisation(port="COM3", baudrate=9600):
     global instruction_queue
     global ser
@@ -34,14 +34,15 @@ def map_voltage(voltage):
 def queueVoltage(channel, voltage):
     value = map_voltage(voltage)
     instructionTemplate = (channel, value)
-    # print(instructionTemplate, "instruction queued")
+    print(instructionTemplate, "instruction queued")
     instruction_queue.put(instructionTemplate)
 
 #The function that continually goes over the instruction queue and sends the voltage to the arduino
 def queueCompleteThread():
-    while Kill == False:
+    while KillThreadBool == False:
         # Get instruction from queue
         if instruction_queue.empty() == False:
+            print("processing instruction, instructions left:", instruction_queue.qsize())
             instruction = instruction_queue.get()
             voltage = instruction[1]
             channel = instruction[0]
@@ -51,13 +52,16 @@ def queueCompleteThread():
                 ser.write(bytes('{:d} {:d}\n'.format(channel, value), 'utf-8'))
                 print("Completed instruction, channel:", channel, "voltage:", voltage)
             else:
+                None
                 print("*Debug* Completed instruction, channel:", channel, "voltage:", voltage)
                 #print how many instructions are left in the queue
-                pass
             # Mark instruction as complete
             instruction_queue.task_done()
+        else:
+            None
+            # print("no instructions in queue")
             
 def endQueue():
-    global Kill
-    Kill = True
+    global KillThreadBool
+    KillThreadBool = True
     instruction_queue.join()
