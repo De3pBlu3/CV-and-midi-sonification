@@ -5,7 +5,7 @@ import queue
 debugMode = False
 ser = None
 instruction_queue = None
-
+KillThreadBool = False
 def intialisation(port="COM3", baudrate=9600):
     global instruction_queue
     global ser
@@ -39,19 +39,29 @@ def queueVoltage(channel, voltage):
 
 #The function that continually goes over the instruction queue and sends the voltage to the arduino
 def queueCompleteThread():
-    while True:
+    while KillThreadBool == False:
         # Get instruction from queue
-        instruction = instruction_queue.get()
-        voltage = instruction[1]
-        channel = instruction[0]
-        # Process instruction
-        if debugMode == False:
-            value = map_voltage(voltage)
-            ser.write(bytes('{:d} {:d}\n'.format(channel, value), 'utf-8'))
-            print("Completed instruction, channel:", channel, "voltage:", voltage)
+        if instruction_queue.empty() == False:
+            print("processing instruction, instructions left:", instruction_queue.qsize())
+            instruction = instruction_queue.get()
+            voltage = instruction[1]
+            channel = instruction[0]
+            # Process instruction
+            if debugMode == False:
+                value = map_voltage(voltage)
+                ser.write(bytes('{:d} {:d}\n'.format(channel, value), 'utf-8'))
+                print("Completed instruction, channel:", channel, "voltage:", voltage)
+            else:
+                None
+                print("*Debug* Completed instruction, channel:", channel, "voltage:", voltage)
+                #print how many instructions are left in the queue
+            # Mark instruction as complete
+            instruction_queue.task_done()
         else:
-            print("*Debug* Completed instruction, channel:", channel, "voltage:", voltage)
-        # Mark instruction as complete
-        instruction_queue.task_done()
+            None
+            # print("no instructions in queue")
             
-                
+def endQueue():
+    global KillThreadBool
+    KillThreadBool = True
+    instruction_queue.join()
