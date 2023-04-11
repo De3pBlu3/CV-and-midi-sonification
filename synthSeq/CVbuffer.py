@@ -2,11 +2,16 @@ import serial
 from time import sleep
 import math
 import queue
+
 debugMode = False
 ser = None
 instruction_queue = None
 KillThreadBool = False
-def intialisation(port="COM3", baudrate=9600):
+
+
+
+        
+def intialisation(port="/dev/ttyACM0", baudrate=9600):
     global instruction_queue
     global ser
     if debugMode == False:
@@ -48,8 +53,7 @@ def queueCompleteThread():
             channel = instruction[0]
             # Process instruction
             if debugMode == False:
-                value = map_voltage(voltage)
-                ser.write(bytes('{:d} {:d}\n'.format(channel, value), 'utf-8'))
+                ser.write(bytes('{:d} {:d}\n'.format(channel, voltage), 'utf-8'))
                 print("Completed instruction, channel:", channel, "voltage:", voltage)
             else:
                 None

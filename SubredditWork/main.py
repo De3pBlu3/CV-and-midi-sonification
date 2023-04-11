@@ -1,29 +1,17 @@
-from tqdm import tqdm
-from datetime import datetime, timedelta
-import requests
+import praw
+import time
+import datetime
+
 # Reddit API credentials
-headers = {'User-agent': 'Newbot'}
-
-#a function which takes a series of datetimes and returns the average time between them
-def get_average_time(datetimes):
-    if len(datetimes) <= 1:
-        return timedelta(0)
-
-    total_diff = timedelta(0)
-
-    for i in range(1, len(datetimes)):
-        diff = abs(datetimes[i] - datetimes[i-1])
-        total_diff += diff
-
-    avg_diff = total_diff / (len(datetimes)-1)
-    return avg_diff
-    
+reddit = praw.Reddit(client_id='n7xBaT8wSjlDHX_Z7HSVvA',
+                     client_secret='4QZi6_F_pyH-n8bbjxnEh2iCC83dnw',
+                     user_agent='LoudSilent (by /u/NotARealUser)')
 #generate a list of subreddits by reading file
 def get_subreddits(file="Validsubreddits.txt"):
     subreddits = []
     with open(file, 'r') as f:
         for line in f:
-            subreddits.append(line.strip())
+            subreddits.append(reddit.subreddit(line.strip()))
     return subreddits
 
 #function to cut off a string at a certain length
@@ -36,22 +24,33 @@ def get_date(submission):
 	time = submission.created
 	return datetime.datetime.fromtimestamp(time)
 
-
-subreddits = get_subreddits()
-
-listOfAverages = []
-
-for i in subreddits:
+def get_average_time(subreddit):
     times = []
-    linkTemplate = "https://www.reddit.com/r/" + i + "/new.json?sort=new&limit=5"
-    subredditRequest = (requests.get(linkTemplate, headers=headers)).json()
-    for post in subredditRequest["data"]["children"]:
-        ts_epoch = post["data"]["created"]
-        ts = datetime.fromtimestamp(ts_epoch)
-        times.append(ts)
-    listOfAverages.append(get_average_time(times))
+    for post in subreddit.new(limit=10):
+        times.append(post.created)
+    times.sort()
+    average = 0
+    for i in range(1, len(times)):
+        average += times[i] - times[i-1]
+    average /= len(times) - 1
+    return(average)
 
 
-for i in listOfAverages:
-    print(i)
+
+
+processed_posts = set()
+
+list_of_subreddits = get_subreddits()
+
+#for testing, cut off list at 5 subreddits
+# list_of_subreddits = list_of_subreddits[:5]
+
+# monitor subreddit for new posts
+while True:
+    sum = 0
+    for subreddit in list_of_subreddits:
+        # add up all times  between posts
+        sum += get_average_time(subreddit)
+    print(sum)
+    time.sleep(60)  # wait 60 seconds before checking again
 
