@@ -1,8 +1,9 @@
 import threading
 import CVbuffer
 import synthControl
+import time
 
-CVbuffer.debugMode = True
+CVbuffer.debugMode = False
 CVbuffer.intialisation()
 
 # Define a function to accept user input and add it to the queue
@@ -31,9 +32,14 @@ processing_thread = threading.Thread(target=CVbuffer.queueCompleteThread)
 processing_thread.start()
 
 
-synthControl.sinWave(1,100)
+synthControl.sendRampUp(2,0,5,5)
+# synthControl.sendStaticVoltage(2, 3.75)
 
-#close processing thread
+# time.sleep(50)
+
+# synthControl.sendStaticVoltage(1, 0)
+# synthControl.sendStaticVoltage(2, 0)
+# #close processing thread
 
 CVbuffer.endQueue()
 

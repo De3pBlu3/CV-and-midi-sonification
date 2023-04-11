@@ -1,4 +1,3 @@
-import timeing 
 import time
 import CVbuffer
 import math
@@ -52,8 +51,8 @@ def sendRampUp(channel, start_voltage, end_voltage, duration):
         duration (float): The duration of the ramp in seconds.
     """
 
-    if valueValidation != True:
-        return()
+    # if valueValidation != True:
+        # return()
     num_steps = 100  # Number of voltage steps
     voltage_increment = (end_voltage - start_voltage) / num_steps
 
@@ -65,6 +64,8 @@ def sendRampUp(channel, start_voltage, end_voltage, duration):
         CVbuffer.queueVoltage(channel, voltage)
         # Wait for a short period of time before sending the next voltage value
         time.sleep(duration / num_steps)
+    CVbuffer.queueVoltage(channel, end_voltage)
+
 
 def sendRampDown(channel, start_voltage, end_voltage, duration):
     """Send a ramp down to be queued to the Arduino.
@@ -86,6 +87,8 @@ def sendRampDown(channel, start_voltage, end_voltage, duration):
         CVbuffer.queueVoltage(channel, voltage)
         # Wait for a short period of time before sending the next voltage value
         time.sleep(duration / num_steps)
+    CVbuffer.queueVoltage(channel, end_voltage)
+
 
 def envelopeRampUp(channel, start_voltage, end_voltage, duration):
     """Send a ramp up to be queued to the Arduino.
@@ -107,6 +110,7 @@ def envelopeRampUp(channel, start_voltage, end_voltage, duration):
         CVbuffer.queueVoltage(channel, voltage)
         # Wait for a short period of time before sending the next voltage value
         time.sleep(duration / num_steps)
+    CVbuffer.queueVoltage(channel, end_voltage)
 
 def sinWave(channel, frequency=1):
     """Send a sin wave to be queued to the Arduino.
