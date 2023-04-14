@@ -1,6 +1,6 @@
 import threading
-import CVbuffer
-import synthControl
+import synthSeq.CVbuffer as CVbuffer
+import synthSeq.synthControl as synthControl 
 import time
 
 CVbuffer.debugMode = False
@@ -32,7 +32,7 @@ processing_thread = threading.Thread(target=CVbuffer.queueCompleteThread)
 processing_thread.start()
 
 
-synthControl.sendRampUp(2,0,5,5)
+
 # synthControl.sendStaticVoltage(2, 3.75)
 
 # time.sleep(50)
@@ -40,10 +40,9 @@ synthControl.sendRampUp(2,0,5,5)
 # synthControl.sendStaticVoltage(1, 0)
 # synthControl.sendStaticVoltage(2, 0)
 # #close processing thread
-
-CVbuffer.endQueue()
-
-processing_thread.join()
+def enqueuer():
+    CVbuffer.endQueue()
+    processing_thread.join()
 
 #print all running threads
 # Wait for the threads to finish

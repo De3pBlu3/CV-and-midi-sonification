@@ -1,5 +1,4 @@
 import random
-import midiControl
 notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b']
 #list of scales
 #major scale

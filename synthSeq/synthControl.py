@@ -1,5 +1,5 @@
 import time
-import CVbuffer
+import synthSeq.CVbuffer as CVbuffer
 import math
 from time import process_time
 def testIfSinisvalid(sineWaveVals):
@@ -140,4 +140,3 @@ def sinWave(channel, frequency=1):
         phase += phase_increment  # Increment the phase
         time.sleep((0.0033))  # Sleep to ensure that the total duration is one second
 
-envelopeRampUp(0,0,5,1)
