@@ -101,16 +101,20 @@ def envelopeRampUp(channel, start_voltage, end_voltage, duration):
     """
     num_steps = 100  # Number of voltage steps
     voltage_increment = (end_voltage - start_voltage) / num_steps
+    # Calculate the envelope
+    envelope = [math.sin((i / num_steps) * math.pi / 2) for i in range(num_steps)]
+    print(envelope)
 
     for i in range(num_steps):
         # Calculate the current voltage value for this iteration
         voltage = start_voltage + i * voltage_increment
         # Map the voltage to a 12-bit value and send it to the Arduino
         print(voltage)
-        CVbuffer.queueVoltage(channel, voltage)
+        # CVbuffer.queueVoltage(channel, voltage)
         # Wait for a short period of time before sending the next voltage value
         time.sleep(duration / num_steps)
-    CVbuffer.queueVoltage(channel, end_voltage)
+    # CVbuffer.queueVoltage(channel, end_voltage)
+
 
 def sinWave(channel, frequency=1):
     """Send a sin wave to be queued to the Arduino.
@@ -135,30 +139,5 @@ def sinWave(channel, frequency=1):
         CVbuffer.queueVoltage(channel, midline + amplitude * math.sin(phase))
         phase += phase_increment  # Increment the phase
         time.sleep((0.0033))  # Sleep to ensure that the total duration is one second
-    end = time.time()
 
-    print("Total time:", end - start)
-    print("Time selected:", duration)
-    print("Time difference:", end - start - duration)
-
-def tempSinWave():
-    frequency = 1  # Frequency of the sine wave (in Hz)
-    sample_rate = 75  # Sample rate (in Hz)
-    duration = 1  # Total duration of the sine wave (in seconds)
-    samples = int(sample_rate * duration)  # Total number of samples
-    phase_increment = 2 * math.pi * frequency / sample_rate  # Phase increment for each sample
-    phase = 0  # Starting phase
-    midline = 2.5  # Midline of the sine wave
-    amplitude = 2.5  # Amplitude of the sine wave
-
-    start = time.time()
-    for i in range(samples):
-        value = midline + amplitude * math.sin(phase)  # Calculate the value of the sine wave at the current phase with adjusted midline and amplitude
-        phase += phase_increment  # Increment the phase
-        time.sleep(1 / sample_rate)  # Sleep to ensure that the total duration is one second
-    end = time.time()
-
-    print("Sleep interval:", (1 / sample_rate)-timeoffSet)
-    print("Total time:", elapsed_time)
-    print("Time selected:", duration)
-    print("Time difference:", elapsed_time - duration)
+envelopeRampUp(0,0,5,1)
