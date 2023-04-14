@@ -36,8 +36,3 @@ def GenerateMelodyWithRests(scale, root, length):
             melody.append("rest")
     return melody
 
-
-melody = GenerateMelodyWithRests(minor, "c#", 10)
-midiControl.ConvertMelodyToMidi(5, melody, 1, 120)
-
-midiControl.endQueue()
