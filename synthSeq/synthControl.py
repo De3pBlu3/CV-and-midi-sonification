@@ -1,5 +1,5 @@
 import time
-import CVbuffer
+import synthSeq.CVbuffer as CVbuffer
 import math
 from time import process_time
 def testIfSinisvalid(sineWaveVals):
@@ -141,7 +141,7 @@ def sinWave(channel, frequency=1):
     print("Time selected:", duration)
     print("Time difference:", end - start - duration)
 
-def tempSinWave():
+
     frequency = 1  # Frequency of the sine wave (in Hz)
     sample_rate = 75  # Sample rate (in Hz)
     duration = 1  # Total duration of the sine wave (in seconds)
