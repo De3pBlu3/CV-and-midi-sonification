@@ -6,4 +6,3 @@ for port in mido.get_input_names():
 for port in mido.get_output_names():
     print(port)
 
-    #no worky, need to cosnider linux install at this point
