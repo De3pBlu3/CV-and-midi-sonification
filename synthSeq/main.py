@@ -31,16 +31,11 @@ processing_thread = threading.Thread(target=CVbuffer.queueCompleteThread)
 # input_thread.start()
 processing_thread.start()
 
+#INSERT COMMANDS
 
-synthControl.sendRampUp(2,0,5,5)
-# synthControl.sendStaticVoltage(2, 3.75)
 
-# time.sleep(50)
 
-# synthControl.sendStaticVoltage(1, 0)
-# synthControl.sendStaticVoltage(2, 0)
 # #close processing thread
-
 CVbuffer.endQueue()
 
 processing_thread.join()
