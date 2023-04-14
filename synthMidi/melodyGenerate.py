@@ -1,5 +1,4 @@
 import random
-import midiControl
 notes = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b']
 #list of scales
 #major scale
@@ -36,8 +35,3 @@ def GenerateMelodyWithRests(scale, root, length):
             melody.append("rest")
     return melody
 
-
-melody = GenerateMelodyWithRests(minor, "c#", 10)
-midiControl.ConvertMelodyToMidi(5, melody, 1, 120)
-
-midiControl.endQueue()
